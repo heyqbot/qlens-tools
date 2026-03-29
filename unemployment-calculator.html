@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실업급여 계산기 | Q렌즈</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent:#b5470f; --accent-light:#d4622a; --paper:#f5f0e8; --paper-dark:#ede7d9;
+    --ink:#1a1612; --ink-mid:#3d3530; --ink-light:#6b6159; --ink-faint:#9e9189;
+    --rule:#c9bfb0; --gold-tint:#c8a86b;
+  }
+  body { background:var(--paper); color:var(--ink-mid); font-family:'Noto Sans KR',sans-serif; min-height:100vh; }
+  .wrap { max-width:680px; margin:0 auto; padding:3rem 1.5rem 4rem; }
+  .header { border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); padding:1.5rem 0 1.25rem; margin-bottom:2.5rem; }
+  .label { font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:.5rem; }
+  .title { font-family:'Noto Serif KR',serif; font-size:1.75rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:.5rem; }
+  .desc { font-size:.85rem; color:var(--ink-light); line-height:1.6; }
+  .section { background:var(--paper-dark); border:1px solid var(--rule); border-radius:2px; padding:2rem; margin-bottom:1.5rem; }
+  .field { margin-bottom:1.5rem; }
+  .field:last-child { margin-bottom:0; }
+  .field-label { display:block; font-size:.8rem; font-weight:700; color:var(--ink); margin-bottom:.5rem; letter-spacing:.03em; }
+  .field-sub { font-size:.75rem; color:var(--ink-faint); font-weight:400; margin-left:.4rem; }
+  .input-row { display:flex; align-items:center; gap:.75rem; }
+  .input { flex:1; background:var(--paper); border:1px solid var(--rule); border-radius:2px; padding:.75rem 1rem; font-size:1.1rem; font-family:'Noto Sans KR',sans-serif; color:var(--ink); outline:none; transition:border-color .15s; text-align:right; }
+  .input:focus { border-color:var(--accent); }
+  .unit { font-size:.85rem; color:var(--ink-light); white-space:nowrap; }
+  .toggle-group { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .toggle { padding:.5rem 1rem; border:1px solid var(--rule); border-radius:2px; background:var(--paper); color:var(--ink-light); font-size:.8rem; font-family:'Noto Sans KR',sans-serif; cursor:pointer; transition:all .15s; }
+  .toggle:hover { border-color:var(--ink-mid); color:var(--ink-mid); }
+  .toggle.active { background:var(--ink); border-color:var(--ink); color:var(--paper); }
+  .btn { width:100%; padding:1rem; background:var(--accent); color:var(--paper); border:none; border-radius:2px; font-size:.95rem; font-weight:700; font-family:'Noto Sans KR',sans-serif; cursor:pointer; letter-spacing:.05em; transition:background .15s; margin-bottom:1.5rem; }
+  .btn:hover { background:var(--accent-light); }
+  .result { display:none; border:1px solid var(--rule); border-radius:2px; overflow:hidden; margin-bottom:1.5rem; }
+  .result.visible { display:block; }
+  .result-hero { background:var(--ink); padding:2rem; text-align:center; }
+  .result-hero-label { font-size:.75rem; color:var(--ink-faint); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; }
+  .result-hero-num { font-family:'Noto Serif KR',serif; font-size:2.8rem; font-weight:700; color:var(--paper); line-height:1; margin-bottom:.35rem; }
+  .result-hero-sub { font-size:.9rem; color:var(--gold-tint); }
+  .detail-list { background:var(--paper-dark); }
+  .detail-title { padding:1rem 1.5rem .75rem; font-size:.75rem; font-weight:700; color:var(--ink-light); letter-spacing:.1em; text-transform:uppercase; border-bottom:1px solid var(--rule); }
+  .detail-item { display:flex; justify-content:space-between; align-items:center; padding:.75rem 1.5rem; border-bottom:1px solid var(--rule); font-size:.85rem; }
+  .detail-item:last-child { border-bottom:none; }
+  .detail-name { color:var(--ink-mid); }
+  .detail-val { color:var(--ink); font-weight:700; }
+  .notice { background:var(--paper); border-left:3px solid var(--accent); padding:1rem 1.25rem; margin-top:1rem; font-size:.8rem; color:var(--ink-light); line-height:1.7; }
+  .note { font-size:.75rem; color:var(--ink-faint); line-height:1.6; padding:1rem 0; border-top:1px solid var(--rule); }
+  .note strong { color:var(--ink-light); }
+  .article-link { border:1px solid var(--rule); border-radius:2px; padding:1.25rem 1.5rem; margin-top:1.5rem; display:flex; align-items:center; justify-content:space-between; text-decoration:none; transition:border-color .15s; }
+  .article-link:hover { border-color:var(--accent); }
+  .article-link-label { font-size:.7rem; color:var(--accent); font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.3rem; }
+  .article-link-title { font-size:.95rem; font-weight:700; color:var(--ink); font-family:'Noto Serif KR',serif; }
+  .article-link-arrow { font-size:1.2rem; color:var(--rule); }
+  .brand { text-align:center; padding-top:2rem; font-size:.75rem; color:var(--rule); letter-spacing:.1em; }
+  .brand a { color:var(--accent); text-decoration:none; }
+  @media(max-width:480px){ .wrap{padding:2rem 1rem 3rem;} .title{font-size:1.4rem;} .result-hero-num{font-size:2.2rem;} .section{padding:1.5rem 1rem;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <p class="label">Q렌즈 도구</p>
+    <h1 class="title">실업급여 계산기</h1>
+    <p class="desc">퇴사 후 받을 수 있는 구직급여(실업급여) 예상액을 계산합니다. 2025년 기준.</p>
+  </header>
+
+  <div class="section">
+    <div class="field">
+      <label class="field-label" for="wage">퇴직 전 3개월 평균 월급 <span class="field-sub">세전</span></label>
+      <div class="input-row">
+        <input class="input" id="wage" type="number" placeholder="3000000" min="0">
+        <span class="unit">원</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">고용보험 가입 기간</label>
+      <div class="toggle-group" id="period-group">
+        <button class="toggle active" data-value="6">6개월~1년</button>
+        <button class="toggle" data-value="12">1~3년</button>
+        <button class="toggle" data-value="36">3~5년</button>
+        <button class="toggle" data-value="60">5~10년</button>
+        <button class="toggle" data-value="120">10년 이상</button>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">나이</label>
+      <div class="toggle-group" id="age-group">
+        <button class="toggle active" data-value="young">50세 미만</button>
+        <button class="toggle" data-value="old">50세 이상 / 장애인</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calculate()">실업급여 계산하기</button>
+
+  <div class="result" id="result">
+    <div class="result-hero">
+      <p class="result-hero-label">예상 총 수급액</p>
+      <p class="result-hero-num" id="total">—</p>
+      <p class="result-hero-sub" id="daily-sub">일 — 원 × — 일</p>
+    </div>
+    <div class="detail-list">
+      <p class="detail-title">수급 상세</p>
+      <div class="detail-item">
+        <span class="detail-name">1일 구직급여액</span>
+        <span class="detail-val" id="daily">—</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-name">소정급여일수</span>
+        <span class="detail-val" id="days">—</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-name">수급 기간</span>
+        <span class="detail-val" id="period-out">—</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-name">1일 하한액 (2025년)</span>
+        <span class="detail-val">63,104원</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-name">1일 상한액 (2025년)</span>
+        <span class="detail-val">66,000원</span>
+      </div>
+    </div>
+    <div class="notice" id="notice"></div>
+  </div>
+
+  <p class="note">
+    <strong>계산 기준:</strong> 구직급여 = 퇴직 전 평균임금의 60%. 2025년 상한 66,000원/일, 하한 63,104원/일 적용.
+    소정급여일수는 연령·가입기간 기준 고용보험법 별표 1. 비자발적 이직(권고사직, 계약만료 등)에 해당해야 수급 가능.
+    자발적 퇴사는 원칙적으로 수급 불가.
+  </p>
+
+  <a class="article-link" href="https://q-bot.kr" target="_blank">
+    <div>
+      <p class="article-link-label">관련 아티클</p>
+      <p class="article-link-title">실질임금은 왜 오르지 않는가</p>
+    </div>
+    <span class="article-link-arrow">→</span>
+  </a>
+
+  <p class="brand"><a href="https://q-bot.kr" target="_blank">Q-lens</a> · 보이는 것 너머를 묻습니다</p>
+</div>
+
+<script>
+  document.querySelectorAll('.toggle-group').forEach(g => {
+    g.querySelectorAll('.toggle').forEach(b => {
+      b.addEventListener('click', () => {
+        g.querySelectorAll('.toggle').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  });
+
+  function getVal(id) {
+    const el = document.querySelector(`#${id} .toggle.active`);
+    return el ? el.dataset.value : null;
+  }
+
+  function fmt(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+  // 소정급여일수 테이블 [가입기간개월, 50세미만, 50세이상/장애인]
+  function getDays(months, isOld) {
+    if (months < 12)  return isOld ? 120 : 120;
+    if (months < 36)  return isOld ? 150 : 150;
+    if (months < 60)  return isOld ? 180 : 180;
+    if (months < 120) return isOld ? 210 : 210;
+    return isOld ? 270 : 240;
+  }
+
+  function calculate() {
+    const wage = Number(document.getElementById('wage').value);
+    if (!wage || wage <= 0) { document.getElementById('wage').focus(); return; }
+
+    const months = Number(getVal('period-group'));
+    const isOld  = getVal('age-group') === 'old';
+
+    const dailyAvg = wage / 30;
+    let daily = Math.round(dailyAvg * 0.6);
+    daily = Math.max(63104, Math.min(66000, daily));
+
+    const days = getDays(months, isOld);
+    const total = daily * days;
+
+    document.getElementById('total').textContent = fmt(total);
+    document.getElementById('daily-sub').textContent = `일 ${daily.toLocaleString()}원 × ${days}일`;
+    document.getElementById('daily').textContent = fmt(daily);
+    document.getElementById('days').textContent = days + '일';
+    document.getElementById('period-out').textContent = Math.round(days / 30) + '개월';
+
+    let notice = '';
+    if (daily === 66000) notice = '⚠️ 평균임금 60%가 상한액(66,000원)을 초과해 상한액으로 지급됩니다.';
+    else if (daily === 63104) notice = '⚠️ 평균임금 60%가 하한액(63,104원) 미만이어서 하한액으로 지급됩니다.';
+    else notice = '✓ 평균임금의 60%가 정상 적용됩니다.';
+    document.getElementById('notice').textContent = notice;
+
+    const r = document.getElementById('result');
+    r.classList.add('visible');
+    r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
