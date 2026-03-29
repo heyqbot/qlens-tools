@@ -320,7 +320,7 @@ input:focus { border-color: #16a34a; }
   <div class="field">
     <label for="salary">연봉 <span class="field-hint">세전</span></label>
     <div class="input-wrap">
-      <input type="number" id="salary" placeholder="40000000" min="0" step="100000">
+      <input type="text" id="salary" placeholder="40,000,000" inputmode="numeric">
       <span class="input-unit">원</span>
     </div>
   </div>
@@ -477,7 +477,7 @@ function getIncomeTax(monthly, deps, children) {
 }
 
 function calc() {
-  var salary   = Number(document.getElementById('salary').value);
+  var salary   = Number(document.getElementById('salary').value.replace(/,/g, ''));
   var deps     = Number(document.getElementById('dependents').value) || 1;
   var children = Number(document.getElementById('children').value) || 0;
   var nontaxM  = Number(document.getElementById('nontax').value) || 0;
@@ -531,6 +531,14 @@ function calc() {
 
   result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// 천단위 자동 포맷
+document.getElementById('salary').addEventListener('input', function() {
+  var raw = this.value.replace(/[^0-9]/g, '');
+  if (raw) {
+    this.value = Number(raw).toLocaleString('ko-KR');
+  }
+});
 
 document.getElementById('salary').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') calc();
