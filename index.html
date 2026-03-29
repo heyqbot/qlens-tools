@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>금융·노무 계산기 모음 | Q렌즈</title>
+<meta name="description" content="연봉 실수령액, 실업급여, 퇴직금 계산기. 2025년 기준 4대보험·세금 반영. Q렌즈가 만든 무료 계산기 모음.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent:#b5470f; --accent-light:#d4622a; --paper:#f5f0e8; --paper-dark:#ede7d9;
+    --ink:#1a1612; --ink-mid:#3d3530; --ink-light:#6b6159; --ink-faint:#9e9189;
+    --rule:#c9bfb0; --gold-tint:#c8a86b;
+  }
+  body { background:var(--paper); color:var(--ink-mid); font-family:'Noto Sans KR',sans-serif; min-height:100vh; }
+  .wrap { max-width:760px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+
+  /* 헤더 */
+  .header { border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); padding:1.75rem 0 1.5rem; margin-bottom:3rem; }
+  .label { font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:.6rem; }
+  .title { font-family:'Noto Serif KR',serif; font-size:2rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:.6rem; }
+  .desc { font-size:.9rem; color:var(--ink-light); line-height:1.7; }
+
+  /* 계산기 카드 그리드 */
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:3rem; }
+
+  .card { display:block; border:1px solid var(--rule); border-radius:2px; padding:1.75rem 1.5rem; text-decoration:none; background:var(--paper); transition:all .2s; position:relative; overflow:hidden; }
+  .card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--rule); transition:background .2s; }
+  .card:hover { border-color:var(--accent); box-shadow:0 2px 12px rgba(26,22,18,.08); }
+  .card:hover::before { background:var(--accent); }
+
+  .card-icon { font-size:1.5rem; margin-bottom:.75rem; display:block; }
+  .card-title { font-family:'Noto Serif KR',serif; font-size:1.05rem; font-weight:700; color:var(--ink); margin-bottom:.4rem; line-height:1.3; }
+  .card-desc { font-size:.78rem; color:var(--ink-light); line-height:1.6; }
+  .card-tag { display:inline-block; margin-top:.75rem; font-size:.7rem; color:var(--accent); font-weight:700; letter-spacing:.05em; }
+
+  /* 구분선 */
+  .section-title {
+    font-size:.75rem; font-weight:700; color:var(--ink-faint); letter-spacing:.12em;
+    text-transform:uppercase; margin-bottom:1rem; padding-bottom:.75rem;
+    border-bottom:1px solid var(--rule);
+  }
+
+  /* 아티클 연결 */
+  .article-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:3rem; }
+  .article-card { border:1px solid var(--rule); border-radius:2px; padding:1.25rem 1.25rem; text-decoration:none; display:block; transition:border-color .15s; }
+  .article-card:hover { border-color:var(--accent); }
+  .article-cat { font-size:.68rem; color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.4rem; }
+  .article-title { font-size:.9rem; font-weight:700; color:var(--ink); font-family:'Noto Serif KR',serif; line-height:1.4; }
+
+  /* 브랜드 */
+  .footer { border-top:1px solid var(--rule); padding-top:1.5rem; display:flex; align-items:center; justify-content:space-between; }
+  .footer-brand { font-family:'Noto Serif KR',serif; font-size:.9rem; color:var(--ink-light); }
+  .footer-brand strong { color:var(--accent); }
+  .footer-desc { font-size:.75rem; color:var(--ink-faint); }
+
+  @media(max-width:540px){
+    .wrap{padding:2rem 1rem 4rem;}
+    .title{font-size:1.5rem;}
+    .grid{grid-template-columns:1fr;}
+    .article-grid{grid-template-columns:1fr;}
+    .footer{flex-direction:column;gap:.5rem;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <p class="label">Q렌즈 도구 모음</p>
+    <h1 class="title">금융·노무 계산기</h1>
+    <p class="desc">2025년 기준. 세금, 4대보험, 퇴직·실업급여 — 숫자로 직접 확인한다.</p>
+  </header>
+
+  <p class="section-title">계산기</p>
+  <div class="grid">
+    <a class="card" href="./salary-calculator.html">
+      <span class="card-icon">💰</span>
+      <p class="card-title">연봉 실수령액 계산기</p>
+      <p class="card-desc">4대보험 + 소득세 공제 후 실제 수령액. 부양가족 수 반영.</p>
+      <span class="card-tag">→ 계산하기</span>
+    </a>
+    <a class="card" href="./unemployment-calculator.html">
+      <span class="card-icon">📋</span>
+      <p class="card-title">실업급여 계산기</p>
+      <p class="card-desc">퇴사 후 받을 수 있는 구직급여 예상액. 가입기간·나이 반영.</p>
+      <span class="card-tag">→ 계산하기</span>
+    </a>
+    <a class="card" href="./severance-calculator.html">
+      <span class="card-icon">📅</span>
+      <p class="card-title">퇴직금 계산기</p>
+      <p class="card-desc">근속기간·평균임금 기준 법정 퇴직금. 상여·연차수당 반영.</p>
+      <span class="card-tag">→ 계산하기</span>
+    </a>
+    <div class="card" style="opacity:.5;cursor:default;">
+      <span class="card-icon">🏠</span>
+      <p class="card-title">증여세 계산기</p>
+      <p class="card-desc">준비 중</p>
+      <span class="card-tag" style="color:var(--ink-faint)">곧 추가됩니다</span>
+    </div>
+  </div>
+
+  <p class="section-title">관련 아티클</p>
+  <div class="article-grid">
+    <a class="article-card" href="https://q-bot.kr" target="_blank">
+      <p class="article-cat">데이터·인사이트</p>
+      <p class="article-title">실질임금은 왜 오르지 않는가</p>
+    </a>
+    <a class="article-card" href="https://q-bot.kr" target="_blank">
+      <p class="article-cat">금융·투자</p>
+      <p class="article-title">퇴직연금 DC형 vs DB형 — 어느 쪽이 유리한가</p>
+    </a>
+    <a class="article-card" href="https://q-bot.kr" target="_blank">
+      <p class="article-cat">전략·분석</p>
+      <p class="article-title">무인 계산대가 확산되는 구조</p>
+    </a>
+    <a class="article-card" href="https://q-bot.kr" target="_blank">
+      <p class="article-cat">사회·이슈</p>
+      <p class="article-title">최저임금 협상의 구조적 문제</p>
+    </a>
+  </div>
+
+  <div class="footer">
+    <div>
+      <p class="footer-brand"><strong>Q-lens</strong></p>
+      <p class="footer-desc">보이는 것 너머를 묻습니다 · q-bot.kr</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
