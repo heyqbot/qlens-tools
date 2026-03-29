@@ -323,6 +323,37 @@ input[type="text"]:focus { border-color: #16a34a; }
   .summary-grid { grid-template-columns: 1fr; }
   .hero-amount { font-size: 1.45rem; }
 }
+
+/* ── 인쇄 / PDF ── */
+.dl-btn {
+  display: none;
+  width: 100%;
+  padding: 0.8rem;
+  background: #fff;
+  color: #16a34a;
+  border: 1.5px solid #16a34a;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 1rem;
+}
+.dl-btn:hover { background: #f0fdf4; }
+.dl-btn.visible { display: block; }
+
+@media print {
+  body { padding: 0; max-width: 100%; font-size: 13px; }
+  .btn, .dl-btn { display: none !important; }
+  .hero-result { background: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .hero-amount { color: #fff !important; }
+  .hero-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .card { background: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tip-box { background: #f0fdf4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .brand { display: none; }
+  .toggle-group { display: none; }
+}
 </style>
 </head>
 <body>
@@ -397,6 +428,7 @@ input[type="text"]:focus { border-color: #16a34a; }
 <button class="btn" onclick="calc()">세금 계산하기</button>
 
 <!-- 결과 -->
+<button class="dl-btn" id="dl-btn" onclick="downloadPDF()">↓ 결과 PDF로 저장</button>
 <div class="result" id="result">
 
   <!-- 히어로 -->
@@ -716,6 +748,14 @@ function calc() {
     document.getElementById('rate-bar').style.width = Math.min(effectiveRate, 50) + '%';
   }, 100);
   r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('dl-btn').classList.add('visible');
+}
+
+function downloadPDF() {
+  var title = document.title;
+  document.title = '프리랜서 세금 계산기 결과 | Q-Lens';
+  window.print();
+  document.title = title;
 }
 </script>
 </body>
