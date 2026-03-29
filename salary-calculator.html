@@ -3,567 +3,538 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>연봉 실수령액 계산기 | Q렌즈</title>
+<title>연봉 실수령액 계산기 | Q-Lens</title>
+<meta name="description" content="연봉 실수령액 계산기 2025년. 4대보험과 소득세를 공제한 실제 수령액을 계산합니다.">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background: #fff;
+  color: #111;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
 
-  :root {
-    --accent:      #b5470f;
-    --accent-light:#d4622a;
-    --paper:       #f5f0e8;
-    --paper-dark:  #ede7d9;
-    --ink:         #1a1612;
-    --ink-mid:     #3d3530;
-    --ink-light:   #6b6159;
-    --ink-faint:   #9e9189;
-    --rule:        #c9bfb0;
-    --gold-tint:   #c8a86b;
-  }
+/* 헤더 */
+.page-label {
+  font-size: 0.72rem;
+  color: #16a34a;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
 
-  html { font-size: 16px; }
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
 
-  body {
-    background: var(--paper);
-    color: var(--ink-mid);
-    font-family: 'Noto Sans KR', sans-serif;
-    min-height: 100vh;
-    padding: 0;
-  }
+.page-desc {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #111;
+}
 
-  .ql-calc-wrap {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 4rem;
-  }
+/* 입력 카드 */
+.card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
 
-  /* 헤더 */
-  .ql-calc-header {
-    border-top: 2px solid var(--ink);
-    border-bottom: 1px solid var(--rule);
-    padding: 1.5rem 0 1.25rem;
-    margin-bottom: 2.5rem;
-  }
+.card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 1.25rem;
+}
 
-  .ql-calc-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
+.field { margin-bottom: 1.1rem; }
+.field:last-child { margin-bottom: 0; }
 
-  .ql-calc-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.4rem;
+}
 
-  .ql-calc-desc {
-    font-size: 0.85rem;
-    color: var(--ink-light);
-    line-height: 1.6;
-  }
+.field-hint {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  font-weight: 400;
+  margin-left: 0.3rem;
+}
 
-  /* 입력 섹션 */
-  .ql-input-section {
-    background: var(--paper-dark);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-  }
+.input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  .ql-field {
-    margin-bottom: 1.5rem;
-  }
+input[type="number"],
+input[type="text"] {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
 
-  .ql-field:last-child { margin-bottom: 0; }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-  .ql-field-label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.03em;
-  }
+input:focus { border-color: #16a34a; }
 
-  .ql-field-sub {
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    font-weight: 400;
-    margin-left: 0.4rem;
-  }
+.input-unit {
+  font-size: 0.82rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
 
-  .ql-input-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
+/* 두 열 그리드 */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
 
-  .ql-input {
-    flex: 1;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 0.75rem 1rem;
-    font-size: 1.1rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
-    text-align: right;
-  }
+/* 계산 버튼 */
+.btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 1.25rem;
+}
 
-  .ql-input:focus {
-    border-color: var(--accent);
-  }
+.btn:hover { background: #15803d; }
 
-  .ql-input-unit {
-    font-size: 0.85rem;
-    color: var(--ink-light);
-    white-space: nowrap;
-    min-width: 2rem;
-  }
+/* 결과 카드 */
+.result { display: none; }
+.result.on { display: block; }
 
-  /* 토글 그룹 */
-  .ql-toggle-group {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
+/* 연간 실수령액 히어로 */
+.hero-result {
+  background: #111;
+  border-radius: 8px;
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
 
-  .ql-toggle {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    background: var(--paper);
-    color: var(--ink-light);
-    font-size: 0.8rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+.hero-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
 
-  .ql-toggle:hover {
-    border-color: var(--ink-mid);
-    color: var(--ink-mid);
-  }
+.hero-amount {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
 
-  .ql-toggle.active {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--paper);
-  }
+.hero-monthly {
+  font-size: 0.9rem;
+  color: #86efac;
+}
 
-  /* 계산 버튼 */
-  .ql-btn {
-    width: 100%;
-    padding: 1rem;
-    background: var(--accent);
-    color: var(--paper);
-    border: none;
-    border-radius: 2px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    letter-spacing: 0.05em;
-    transition: background 0.15s;
-    margin-bottom: 1.5rem;
-  }
+/* 공제 상세 */
+.detail-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
 
-  .ql-btn:hover { background: var(--accent-light); }
+.detail-head {
+  padding: 0.75rem 1.25rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
 
-  /* 결과 섹션 */
-  .ql-result {
-    display: none;
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.88rem;
+}
 
-  .ql-result.visible { display: block; }
+.detail-row:last-child { border-bottom: none; }
 
-  .ql-result-hero {
-    background: var(--ink);
-    padding: 2rem;
-    text-align: center;
-  }
+.detail-name { color: #374151; }
+.detail-sub { font-size: 0.75rem; color: #9ca3af; margin-left: 0.3rem; }
+.detail-val { font-weight: 700; color: #111; font-variant-numeric: tabular-nums; }
+.detail-val.neg { color: #dc2626; }
+.detail-val.pos { color: #16a34a; }
 
-  .ql-result-hero-label {
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
+.detail-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #f9fafb;
+  border-top: 2px solid #e5e7eb;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
 
-  .ql-result-hero-num {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: var(--paper);
-    line-height: 1;
-    margin-bottom: 0.35rem;
-  }
+.detail-total .val { color: #dc2626; }
 
-  .ql-result-hero-monthly {
-    font-size: 0.9rem;
-    color: var(--gold-tint);
-  }
+/* 세율 바 */
+.rate-wrap {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #f3f4f6;
+}
 
-  /* 공제 내역 */
-  .ql-deduction-list {
-    background: var(--paper-dark);
-  }
+.rate-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
 
-  .ql-deduction-title {
-    padding: 1rem 1.5rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--ink-light);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--rule);
-  }
+.rate-bar-bg {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
 
-  .ql-deduction-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1.5rem;
-    border-bottom: 1px solid var(--rule);
-    font-size: 0.85rem;
-  }
+.rate-bar-fill {
+  height: 100%;
+  background: #16a34a;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
 
-  .ql-deduction-item:last-child { border-bottom: none; }
+/* 월별 요약 */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
 
-  .ql-deduction-name { color: var(--ink-mid); }
+.summary-cell {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+}
 
-  .ql-deduction-amount {
-    color: var(--ink);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
+.summary-cell-label {
+  font-size: 0.72rem;
+  color: #6b7280;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
 
-  .ql-deduction-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: var(--paper);
-    border-top: 2px solid var(--rule);
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--ink);
-  }
+.summary-cell-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+  font-variant-numeric: tabular-nums;
+}
 
-  .ql-deduction-total-amount { color: var(--accent); }
+/* 주석 */
+.note {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.7;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
 
-  /* 세율 바 */
-  .ql-rate-bar-wrap {
-    padding: 1.25rem 1.5rem;
-    background: var(--paper);
-    border-top: 1px solid var(--rule);
-  }
+/* 브랜드 */
+.brand {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #d1d5db;
+  letter-spacing: 0.08em;
+}
 
-  .ql-rate-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    margin-bottom: 0.5rem;
-  }
+.brand a { color: #16a34a; text-decoration: none; }
 
-  .ql-rate-bar-bg {
-    height: 6px;
-    background: var(--rule);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .ql-rate-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
-    transition: width 0.5s ease;
-    width: 0%;
-  }
-
-  /* 주석 */
-  .ql-note {
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    line-height: 1.6;
-    padding: 1rem 0;
-    border-top: 1px solid var(--rule);
-  }
-
-  .ql-note strong { color: var(--ink-light); }
-
-  /* 출처 */
-  .ql-source {
-    font-size: 0.72rem;
-    color: var(--ink-faint);
-    border-top: 1px solid var(--rule);
-    padding-top: 1rem;
-    margin-top: 1rem;
-    line-height: 1.7;
-  }
-
-  /* Q렌즈 브랜딩 */
-  .ql-brand {
-    text-align: center;
-    padding-top: 2rem;
-    font-size: 0.75rem;
-    color: var(--rule);
-    letter-spacing: 0.1em;
-  }
-
-  .ql-brand a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  @media (max-width: 480px) {
-    .ql-calc-wrap { padding: 2rem 1rem 3rem; }
-    .ql-calc-title { font-size: 1.4rem; }
-    .ql-result-hero-num { font-size: 2.2rem; }
-    .ql-input-section { padding: 1.5rem 1rem; }
-  }
+@media (max-width: 480px) {
+  .two-col { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .hero-amount { font-size: 1.9rem; }
+}
 </style>
 </head>
 <body>
-<div class="ql-calc-wrap">
 
-  <header class="ql-calc-header">
-    <p class="ql-calc-label">Q렌즈 도구</p>
-    <h1 class="ql-calc-title">연봉 실수령액 계산기</h1>
-    <p class="ql-calc-desc">4대보험 + 소득세를 반영한 실제 수령액을 계산합니다. 2025년 기준.</p>
-  </header>
+<p class="page-label">Q-Lens · 도구</p>
+<h1 class="page-title">연봉 실수령액 계산기</h1>
+<p class="page-desc">2025년 기준 · 4대보험 + 소득세 자동 계산</p>
 
-  <!-- 입력 -->
-  <div class="ql-input-section">
+<!-- 입력 -->
+<div class="card">
+  <p class="card-title">입력</p>
 
-    <div class="ql-field">
-      <label class="ql-field-label" for="salary">연봉 <span class="ql-field-sub">세전</span></label>
-      <div class="ql-input-row">
-        <input class="ql-input" id="salary" type="number" placeholder="35000000" min="0" step="1000000">
-        <span class="ql-input-unit">원</span>
-      </div>
+  <div class="field">
+    <label for="salary">연봉 <span class="field-hint">세전</span></label>
+    <div class="input-wrap">
+      <input type="number" id="salary" placeholder="40000000" min="0" step="100000">
+      <span class="input-unit">원</span>
     </div>
-
-    <div class="ql-field">
-      <label class="ql-field-label">부양가족 수 <span class="ql-field-sub">본인 포함</span></label>
-      <div class="ql-toggle-group" id="dependents-group">
-        <button class="ql-toggle active" data-value="1">1명</button>
-        <button class="ql-toggle" data-value="2">2명</button>
-        <button class="ql-toggle" data-value="3">3명</button>
-        <button class="ql-toggle" data-value="4">4명</button>
-        <button class="ql-toggle" data-value="5">5명+</button>
-      </div>
-    </div>
-
-    <div class="ql-field">
-      <label class="ql-field-label">비과세 수당 <span class="ql-field-sub">식대 등 월 20만원 이하 비과세</span></label>
-      <div class="ql-toggle-group" id="nontax-group">
-        <button class="ql-toggle active" data-value="200000">포함 (20만원)</button>
-        <button class="ql-toggle" data-value="0">없음</button>
-      </div>
-    </div>
-
   </div>
 
-  <button class="ql-btn" onclick="calculate()">실수령액 계산하기</button>
-
-  <!-- 결과 -->
-  <div class="ql-result" id="result">
-    <div class="ql-result-hero">
-      <p class="ql-result-hero-label">연간 실수령액</p>
-      <p class="ql-result-hero-num" id="net-annual">—</p>
-      <p class="ql-result-hero-monthly" id="net-monthly">월 —원</p>
-    </div>
-
-    <div class="ql-deduction-list">
-      <p class="ql-deduction-title">공제 내역 (월 기준)</p>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">국민연금 <span style="font-size:0.75rem;color:var(--ink-faint)">(4.5%)</span></span>
-        <span class="ql-deduction-amount" id="d-pension">—</span>
-      </div>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">건강보험 <span style="font-size:0.75rem;color:var(--ink-faint)">(3.545%)</span></span>
-        <span class="ql-deduction-amount" id="d-health">—</span>
-      </div>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">장기요양보험 <span style="font-size:0.75rem;color:var(--ink-faint)">(건강보험료×12.95%)</span></span>
-        <span class="ql-deduction-amount" id="d-care">—</span>
-      </div>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">고용보험 <span style="font-size:0.75rem;color:var(--ink-faint)">(0.9%)</span></span>
-        <span class="ql-deduction-amount" id="d-employ">—</span>
-      </div>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">소득세 <span style="font-size:0.75rem;color:var(--ink-faint)">(간이세액표)</span></span>
-        <span class="ql-deduction-amount" id="d-income">—</span>
-      </div>
-      <div class="ql-deduction-item">
-        <span class="ql-deduction-name">지방소득세 <span style="font-size:0.75rem;color:var(--ink-faint)">(소득세×10%)</span></span>
-        <span class="ql-deduction-amount" id="d-local">—</span>
-      </div>
-      <div class="ql-deduction-total">
-        <span>월 총 공제액</span>
-        <span class="ql-deduction-total-amount" id="d-total">—</span>
+  <div class="two-col">
+    <div class="field">
+      <label for="dependents">부양가족 수 <span class="field-hint">본인 포함</span></label>
+      <div class="input-wrap">
+        <input type="number" id="dependents" value="1" min="1" max="10">
+        <span class="input-unit">명</span>
       </div>
     </div>
-
-    <div class="ql-rate-bar-wrap">
-      <div class="ql-rate-bar-label">
-        <span>실효세율 (공제 비율)</span>
-        <span id="effective-rate">—%</span>
-      </div>
-      <div class="ql-rate-bar-bg">
-        <div class="ql-rate-bar-fill" id="rate-bar"></div>
+    <div class="field">
+      <label for="children">20세 이하 자녀 수</label>
+      <div class="input-wrap">
+        <input type="number" id="children" value="0" min="0" max="9">
+        <span class="input-unit">명</span>
       </div>
     </div>
   </div>
 
-  <p class="ql-note">
-    <strong>계산 기준:</strong> 2025년 4대보험 요율 적용. 소득세는 국세청 근로소득 간이세액표 기준 (부양가족 수 반영). 
-    비과세 수당(식대 월 20만원)은 과세표준에서 제외. 퇴직금, 상여금, 성과급은 미포함.
-    실제 공제액은 회사 기준 및 개인 상황에 따라 다를 수 있습니다.
-  </p>
+  <div class="field">
+    <label for="nontax">월 비과세 수당 <span class="field-hint">식대 20만·자가운전보조금 20만·보육수당 20만 (각 한도, 중복 가능)</span></label>
+    <div class="input-wrap">
+      <input type="number" id="nontax" value="200000" min="0" max="600000" step="10000">
+      <span class="input-unit">원</span>
+    </div>
+  </div>
+</div>
 
-  <p class="ql-source">
-    출처: 국민연금공단 (2025), 국민건강보험공단 (2025), 국세청 근로소득 간이세액표 (2025)<br>
-    장기요양보험료율: 건강보험료의 12.95% (2025년 기준)
-  </p>
+<button class="btn" onclick="calc()">계산하기</button>
 
-  <p class="ql-brand">
-    <a href="https://q-bot.kr" target="_blank">Q-lens</a> · 보이는 것 너머를 묻습니다
+<!-- 결과 -->
+<div class="result" id="result">
+
+  <div class="hero-result">
+    <p class="hero-label">연간 실수령액</p>
+    <p class="hero-amount" id="r-annual">—</p>
+    <p class="hero-monthly" id="r-monthly">월 평균 —</p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-cell">
+      <p class="summary-cell-label">월 실수령액</p>
+      <p class="summary-cell-val" id="r-m-net">—</p>
+    </div>
+    <div class="summary-cell">
+      <p class="summary-cell-label">월 총 공제액</p>
+      <p class="summary-cell-val" id="r-m-total">—</p>
+    </div>
+    <div class="summary-cell">
+      <p class="summary-cell-label">연간 세전</p>
+      <p class="summary-cell-val" id="r-y-gross">—</p>
+    </div>
+    <div class="summary-cell">
+      <p class="summary-cell-label">실효 공제율</p>
+      <p class="summary-cell-val" id="r-rate">—</p>
+    </div>
+  </div>
+
+  <div class="detail-card">
+    <p class="detail-head">월 공제 내역</p>
+
+    <div class="detail-row">
+      <span class="detail-name">국민연금 <span class="detail-sub">(4.5%)</span></span>
+      <span class="detail-val neg" id="d-pension">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-name">건강보험 <span class="detail-sub">(3.545%)</span></span>
+      <span class="detail-val neg" id="d-health">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-name">장기요양보험 <span class="detail-sub">(건보료×12.95%)</span></span>
+      <span class="detail-val neg" id="d-care">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-name">고용보험 <span class="detail-sub">(0.9%)</span></span>
+      <span class="detail-val neg" id="d-employ">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-name">소득세 <span class="detail-sub">(간이세액표)</span></span>
+      <span class="detail-val neg" id="d-income">—</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-name">지방소득세 <span class="detail-sub">(소득세×10%)</span></span>
+      <span class="detail-val neg" id="d-local">—</span>
+    </div>
+
+    <div class="detail-total">
+      <span>월 총 공제액</span>
+      <span class="val" id="d-total">—</span>
+    </div>
+
+    <div class="rate-wrap">
+      <div class="rate-label">
+        <span>실효 공제율</span>
+        <span id="r-rate2">—%</span>
+      </div>
+      <div class="rate-bar-bg">
+        <div class="rate-bar-fill" id="rate-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    <strong>2025년 기준:</strong> 국민연금 4.5% (상한 월 617,700원 기준), 건강보험 3.545%, 장기요양 12.95%, 고용보험 0.9%. 소득세는 국세청 근로소득 간이세액표 적용. 비과세 수당은 과세표준에서 제외. 퇴직금·상여금 미포함. 실제 공제액은 회사 기준에 따라 다를 수 있습니다.<br><br>
+    <strong>출처:</strong> 국민연금공단 (2025) · 국민건강보험공단 (2025) · 국세청 근로소득 간이세액표 (2025)
   </p>
 
 </div>
 
+<p class="brand"><a href="https://q-bot.kr" target="_blank">Q-Lens</a></p>
+
 <script>
-  // 토글 그룹 핸들러
-  document.querySelectorAll('.ql-toggle-group').forEach(group => {
-    group.querySelectorAll('.ql-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
-        group.querySelectorAll('.ql-toggle').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-  });
+function fmt(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
 
-  function getToggleValue(groupId) {
-    const active = document.querySelector(`#${groupId} .ql-toggle.active`);
-    return active ? Number(active.dataset.value) : 0;
-  }
+// 간이세액표 (2025, 월 과세급여 기준, [상한, [1인,2인,3인,4인,5인이상]])
+var TAX = [
+  [1060000,  [0,0,0,0,0]],
+  [1500000,  [17160,0,0,0,0]],
+  [2000000,  [49270,6270,0,0,0]],
+  [2500000,  [96390,53390,10390,0,0]],
+  [3000000,  [152630,98630,44630,1630,0]],
+  [3500000,  [222540,157540,98540,50540,7540]],
+  [4000000,  [304560,231560,162560,107560,52560]],
+  [4500000,  [390810,305810,224810,157810,97810]],
+  [5000000,  [499770,404770,313770,236770,166770]],
+  [5500000,  [618090,518090,418090,330090,251090]],
+  [6000000,  [748310,638310,530310,432310,343310]],
+  [7000000,  [1032630,905630,778630,660630,556630]],
+  [8000000,  [1349190,1212190,1075190,939190,813190]],
+  [9000000,  [1691490,1543490,1395490,1249490,1107490]],
+  [10000000, [2087790,1925790,1763790,1601790,1448790]],
+];
 
-  function fmt(n) {
-    return Math.round(n).toLocaleString('ko-KR') + '원';
-  }
-
-  // 2025년 근로소득 간이세액표 (월 급여 기준, 부양가족 수별)
-  // [월급여 상한, [1명, 2명, 3명, 4명, 5명이상]] 단위: 원
-  // 국세청 간이세액표 주요 구간 (근사치)
-  const taxTable = [
-    [1060000,  [0, 0, 0, 0, 0]],
-    [1500000,  [17160, 0, 0, 0, 0]],
-    [2000000,  [49270, 6270, 0, 0, 0]],
-    [2500000,  [96390, 53390, 10390, 0, 0]],
-    [3000000,  [152630, 98630, 44630, 1630, 0]],
-    [3500000,  [222540, 157540, 98540, 50540, 7540]],
-    [4000000,  [304560, 231560, 162560, 107560, 52560]],
-    [4500000,  [390810, 305810, 224810, 157810, 97810]],
-    [5000000,  [499770, 404770, 313770, 236770, 166770]],
-    [5500000,  [618090, 518090, 418090, 330090, 251090]],
-    [6000000,  [748310, 638310, 530310, 432310, 343310]],
-    [7000000,  [1032630, 905630, 778630, 660630, 556630]],
-    [8000000,  [1349190, 1212190, 1075190, 939190, 813190]],
-    [9000000,  [1691490, 1543490, 1395490, 1249490, 1107490]],
-    [10000000, [2087790, 1925790, 1763790, 1601790, 1448790]],
-    [Infinity, [2087790, 1925790, 1763790, 1601790, 1448790]], // 1천만 이상 별도 계산
-  ];
-
-  function getIncomeTax(monthlyTaxable, dependents) {
-    const depIdx = Math.min(dependents - 1, 4);
-    // 1천만원 초과는 비율 적용 (간이세액표 외 구간)
-    if (monthlyTaxable > 10000000) {
-      const base = taxTable[taxTable.length - 2][1][depIdx];
-      const over = (monthlyTaxable - 10000000) * 0.35;
-      return Math.max(0, base + over);
+function getIncomeTax(monthly, deps, children) {
+  var idx = Math.min(deps - 1, 4);
+  var tax = 0;
+  if (monthly > 10000000) {
+    tax = TAX[TAX.length-1][1][idx] + (monthly - 10000000) * 0.35;
+  } else {
+    for (var i = 0; i < TAX.length; i++) {
+      if (monthly <= TAX[i][0]) { tax = TAX[i][1][idx]; break; }
     }
-    for (let i = 0; i < taxTable.length; i++) {
-      if (monthlyTaxable <= taxTable[i][0]) {
-        return taxTable[i][1][depIdx];
-      }
-    }
-    return 0;
+  }
+  // 자녀 세액공제
+  var childCredit = 0;
+  if (children === 1) childCredit = 12500;
+  else if (children === 2) childCredit = 29160;
+  else if (children >= 3) childCredit = 29160 + (children - 2) * 25000;
+  return Math.max(0, tax - childCredit);
+}
+
+function calc() {
+  var salary   = Number(document.getElementById('salary').value);
+  var deps     = Number(document.getElementById('dependents').value) || 1;
+  var children = Number(document.getElementById('children').value) || 0;
+  var nontaxM  = Number(document.getElementById('nontax').value) || 0;
+
+  if (!salary || salary <= 0) {
+    document.getElementById('salary').focus();
+    return;
   }
 
-  function calculate() {
-    const salaryInput = Number(document.getElementById('salary').value);
-    if (!salaryInput || salaryInput <= 0) {
-      document.getElementById('salary').focus();
-      return;
-    }
+  var grossM   = salary / 12;
+  var taxableM = Math.max(0, grossM - nontaxM);
 
-    const dependents = getToggleValue('dependents-group');
-    const nonTaxMonthly = getToggleValue('nontax-group'); // 비과세 월액
+  // 4대보험
+  var pension = Math.floor(Math.min(taxableM, 6170000) * 0.045 / 10) * 10;
+  var health  = Math.floor(taxableM * 0.03545 / 10) * 10;
+  var care    = Math.floor(health * 0.1295 / 10) * 10;
+  var employ  = Math.floor(taxableM * 0.009 / 10) * 10;
 
-    const monthlyGross = salaryInput / 12;
-    const monthlyTaxable = Math.max(0, monthlyGross - nonTaxMonthly);
+  // 소득세
+  var income  = Math.floor(getIncomeTax(taxableM, deps, children) / 10) * 10;
+  var local   = Math.floor(income * 0.1 / 10) * 10;
 
-    // 4대보험 (2025년 요율)
-    const pension   = Math.floor(monthlyTaxable * 0.045 / 10) * 10;      // 국민연금 4.5%
-    const health    = Math.floor(monthlyTaxable * 0.03545 / 10) * 10;    // 건강보험 3.545%
-    const care      = Math.floor(health * 0.1295 / 10) * 10;             // 장기요양 12.95%
-    const employ    = Math.floor(monthlyTaxable * 0.009 / 10) * 10;      // 고용보험 0.9%
+  var totalDed = pension + health + care + employ + income + local;
+  var netM     = grossM - totalDed;
+  var netY     = netM * 12;
+  var rate     = (totalDed / grossM * 100).toFixed(1);
 
-    // 소득세 (간이세액표)
-    const incomeTax = Math.floor(getIncomeTax(monthlyTaxable, dependents) / 10) * 10;
-    const localTax  = Math.floor(incomeTax * 0.1 / 10) * 10;
+  // 출력
+  document.getElementById('r-annual').textContent  = fmt(netY);
+  document.getElementById('r-monthly').textContent = '월 평균 ' + fmt(netM);
+  document.getElementById('r-m-net').textContent   = fmt(netM);
+  document.getElementById('r-m-total').textContent = fmt(totalDed);
+  document.getElementById('r-y-gross').textContent = fmt(salary);
+  document.getElementById('r-rate').textContent    = rate + '%';
 
-    const totalDeduction = pension + health + care + employ + incomeTax + localTax;
-    const netMonthly = monthlyGross - totalDeduction;
-    const netAnnual  = netMonthly * 12;
-    const effectiveRate = (totalDeduction / monthlyGross * 100).toFixed(1);
+  document.getElementById('d-pension').textContent = fmt(pension);
+  document.getElementById('d-health').textContent  = fmt(health);
+  document.getElementById('d-care').textContent    = fmt(care);
+  document.getElementById('d-employ').textContent  = fmt(employ);
+  document.getElementById('d-income').textContent  = fmt(income);
+  document.getElementById('d-local').textContent   = fmt(local);
+  document.getElementById('d-total').textContent   = fmt(totalDed);
+  document.getElementById('r-rate2').textContent   = rate + '%';
 
-    // 출력
-    document.getElementById('net-annual').textContent = Math.round(netAnnual).toLocaleString('ko-KR') + '원';
-    document.getElementById('net-monthly').textContent = '월 ' + Math.round(netMonthly).toLocaleString('ko-KR') + '원';
-    document.getElementById('d-pension').textContent = fmt(pension);
-    document.getElementById('d-health').textContent  = fmt(health);
-    document.getElementById('d-care').textContent    = fmt(care);
-    document.getElementById('d-employ').textContent  = fmt(employ);
-    document.getElementById('d-income').textContent  = fmt(incomeTax);
-    document.getElementById('d-local').textContent   = fmt(localTax);
-    document.getElementById('d-total').textContent   = fmt(totalDeduction);
-    document.getElementById('effective-rate').textContent = effectiveRate + '%';
+  var result = document.getElementById('result');
+  result.classList.add('on');
 
-    const result = document.getElementById('result');
-    result.classList.add('visible');
-    setTimeout(() => {
-      document.getElementById('rate-bar').style.width = effectiveRate + '%';
-    }, 100);
+  setTimeout(function() {
+    document.getElementById('rate-bar').style.width = rate + '%';
+  }, 100);
 
-    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
-  // 엔터키 계산
-  document.getElementById('salary').addEventListener('keydown', e => {
-    if (e.key === 'Enter') calculate();
-  });
+document.getElementById('salary').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') calc();
+});
 </script>
 </body>
 </html>
