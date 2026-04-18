@@ -572,10 +572,10 @@ select:focus, input:focus {
   'use strict';
 
   // ======== 데이터 ========
-  // 기본 요율 및 계수
+  // 2024~2026 보험개발원·환경부·주요 보험사 공시 기준 평균치
   const RATES = {
-    basePremiumRate: 0.023, // 차량가액 대비 기본 보험료 비율 (2.3%)
-    evSurcharge: 0.27,       // 전기차 기본 가산 (+27%, 2024 평균)
+    basePremiumRate: 0.029, // 차량가액 대비 기본 보험료 (2.9%)
+    evSurcharge: 0.27,       // 전기차 +27% (환경부·보험개발원 2024)
     age: {
       20: 1.35, 30: 1.00, 40: 0.92, 50: 0.95, 60: 1.08
     },
@@ -583,17 +583,17 @@ select:focus, input:focus {
       0: 1.22, 1: 1.08, 3: 1.00, 5: 0.85
     },
     mileage: {
-      2000: 0.63,  // 최대 37% 할인
-      5000: 0.75,  // 25% 할인
+      2000: 0.63,  // 삼성화재 기준 최대 37%
+      5000: 0.75,  // 현대해상 25%
       10000: 0.88,
       15000: 0.95,
       99999: 1.00
     },
     blackboxDiscount: 0.05,
     directDiscount: 0.17,
-    batteryPremiumRate: 0.015, // 차량가액 1.5% 추가
-    chargePremium: 30000,
-    firePremium: 50000
+    batteryPremiumFlat: 80000,  // 배터리 특약 평균 정액 (삼성/DB/KB 평균)
+    chargePremium: 15000,        // 충전 중 사고 특약
+    firePremium: 25000           // 화재·폭발 200% 특약
   };
 
   // ======== 상태 ========
@@ -714,9 +714,8 @@ select:focus, input:focus {
     // 7. 전기차 추가 특약
     if (isEv) {
       if (optBattery.checked) {
-        const add = priceWon * RATES.batteryPremiumRate;
-        base += add;
-        breakdown.push({ label: '배터리 신가보상', value: add });
+        base += RATES.batteryPremiumFlat;
+        breakdown.push({ label: '배터리 신가보상', value: RATES.batteryPremiumFlat });
       }
       if (optCharge.checked) {
         base += RATES.chargePremium;
